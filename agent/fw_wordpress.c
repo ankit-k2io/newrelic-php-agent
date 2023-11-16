@@ -379,7 +379,6 @@ NR_PHP_WRAPPER_END
  * PHP 7.3 and below uses old-style wraprec, and will use old style cufa calls.
  */
 #if ZEND_MODULE_API_NO < ZEND_7_4_X_API_NO
- */
 static void nr_wordpress_call_user_func_array(zend_function* func,
                                               const zend_function* caller
                                                   NRUNUSED TSRMLS_DC) {
