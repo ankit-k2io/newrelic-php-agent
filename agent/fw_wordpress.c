@@ -581,6 +581,7 @@ NR_PHP_WRAPPER(nr_wordpress_apply_filters) {
 }
 NR_PHP_WRAPPER_END
 
+#if ZEND_MODULE_API_NO >= ZEND_7_4_X_API_NO
 /*
  * Wrap the wordpress function add_filter
  *
@@ -637,6 +638,7 @@ NR_PHP_WRAPPER(nr_wordpress_add_filter) {
   }
 }
 NR_PHP_WRAPPER_END
+#endif /* PHP 7.4+ */
 
 void nr_wordpress_enable(TSRMLS_D) {
   nr_php_wrap_user_function(NR_PSTR("apply_filters"),
