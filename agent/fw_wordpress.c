@@ -376,6 +376,44 @@ NR_PHP_WRAPPER(nr_wordpress_wrap_hook) {
 NR_PHP_WRAPPER_END
 
 /*
+ * PHP 7.3 and below uses old-style wraprec, and will use old style cufa calls.
+ */
+#if ZEND_MODULE_API_NO < ZEND_7_4_X_API_NO
+ */
+static void nr_wordpress_call_user_func_array(zend_function* func,
+                                              const zend_function* caller
+                                                  NRUNUSED TSRMLS_DC) {
+  const char* filename;
+  /*
+   * We only want to hook the function being called if this is a WordPress
+   * function, we're instrumenting hooks, and WordPress is currently executing
+   * hooks (denoted by the wordpress_tag being set).
+   */
+  if ((NR_FW_WORDPRESS != NRPRG(current_framework))
+      || (0 == NRINI(wordpress_hooks)) || (NULL == NRPRG(wordpress_tag))) {
+    return;
+  }
+
+  if (NRINI(wordpress_hooks_skip_filename)
+      && 0 != nr_strlen(NRINI(wordpress_hooks_skip_filename))) {
+    filename = nr_php_op_array_file_name(&func->op_array);
+
+    if (nr_strstr(filename, NRINI(wordpress_hooks_skip_filename))) {
+      nrl_verbosedebug(NRL_FRAMEWORK, "skipping hooks for function from %s",
+                       filename);
+      return;
+    }
+  }
+
+  /*
+   * We'll wrap this as a callable to handle anonymous functions being
+   * registered.
+   */
+  nr_php_wrap_callable(func, nr_wordpress_wrap_hook TSRMLS_CC);
+}
+#endif /* PHP < 7.4 */
+
+/*
  * Some plugins generate transient tag names. We can detect these by checking
  * the substrings returned from our regex rule. If the tag is transient, we
  * assemble a new name without the offending hex.
@@ -612,7 +650,11 @@ void nr_wordpress_enable(TSRMLS_D) {
 
   nr_php_wrap_user_function(NR_PSTR("do_action_ref_array"),
                             nr_wordpress_exec_handle_tag TSRMLS_CC);
+#if ZEND_MODULE_API_NO < ZEND_7_4_X_API_NO
+  nr_php_add_call_user_func_array_pre_callback(
+      nr_wordpress_call_user_func_array TSRMLS_CC);
+#else
   nr_php_wrap_user_function(NR_PSTR("add_filter"),
                             nr_wordpress_add_filter);
-
+#endif
 }
