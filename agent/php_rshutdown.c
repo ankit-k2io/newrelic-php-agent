@@ -98,7 +98,6 @@ int nr_php_post_deactivate(void) {
   nr_php_exception_filters_destroy(&NRPRG(exception_filters));
   nr_matcher_destroy(&NRPRG(wordpress_plugin_matcher));
   nr_matcher_destroy(&NRPRG(wordpress_core_matcher));
-  nr_regex_destroy(&NRPRG(wordpress_hook_regex));
   nr_matcher_destroy(&NRPRG(wordpress_theme_matcher));
   nr_hashmap_destroy(&NRPRG(wordpress_file_metadata));
 
