@@ -100,6 +100,7 @@ int nr_php_post_deactivate(void) {
   nr_matcher_destroy(&NRPRG(wordpress_core_matcher));
   nr_matcher_destroy(&NRPRG(wordpress_theme_matcher));
   nr_hashmap_destroy(&NRPRG(wordpress_file_metadata));
+  nr_hashmap_destroy(&NRPRG(wordpress_clean_tag_cache));
 
   nr_free(NRPRG(mysql_last_conn));
   nr_free(NRPRG(pgsql_last_conn));
