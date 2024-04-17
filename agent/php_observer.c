@@ -85,7 +85,7 @@ static zend_observer_fcall_handlers nr_php_fcall_register_handlers(
   handlers.begin = nr_php_observer_fcall_begin;
   handlers.end = nr_php_observer_fcall_end;
   if (execute_data->func->common.function_name) {
-    printf("[REGISTER %s()]\n", ZSTR_VAL(execute_data->func->common.function_name));
+    printf("[REGISTER %d %s()]\n", nr_getpid(), ZSTR_VAL(execute_data->func->common.function_name));
   }
   return handlers;
 }
