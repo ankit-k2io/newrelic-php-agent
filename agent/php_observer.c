@@ -96,7 +96,6 @@ void nr_php_observer_minit() {
   /*
    * Register the Observer API handlers.
    */
-  printf("[MINIT %d]\n", nr_getpid());
   zend_observer_fcall_register(nr_php_fcall_register_handlers);
 
   /*

@@ -39,6 +39,7 @@ PHP_MSHUTDOWN_FUNCTION(newrelic) {
    * It is assumed that this MSHUTDOWN is only done once per PHP process.
    */
   nrl_debug(NRL_INIT, "MSHUTDOWN processing started");
+  printf("[MSHUTDOWN %d]\n", getpid());
 
   nr_wordpress_mshutdown();
 
