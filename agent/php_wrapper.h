@@ -285,6 +285,8 @@ extern zval** nr_php_get_return_value_ptr(TSRMLS_D);
     } else { \
       func_return_value_ptr = nr_php_get_return_value_ptr(); \
       func_return_value = func_return_value_ptr ? *func_return_value_ptr : NULL;\
+      nr_php_observer_fcall_end(execute_data,        \
+              func_return_value_ptr ? *func_return_value_ptr : NULL); \
     }
 #endif
 
@@ -296,9 +298,6 @@ extern zval** nr_php_get_return_value_ptr(TSRMLS_D);
   __attribute__((unused));                           \
   if (!was_executed) {                               \
     NR_PHP_WRAPPER_CALL                              \
-  }                                                  \
-  if (!is_begin) {                                   \
-      nr_php_observer_fcall_end(execute_data, func_return_value); \
   }                                                  \
                                                      \
   if (zcaught) {                                     \
@@ -316,11 +315,7 @@ extern zval** nr_php_get_return_value_ptr(TSRMLS_D);
   if (!was_executed) {                               \
     NR_PHP_WRAPPER_CALL                              \
   }                                                  \
-  if (!is_begin) {                                   \
-      func_return_value_ptr = nr_php_get_return_value_ptr(); \
-      nr_php_observer_fcall_end(execute_data,        \
-              func_return_value_ptr ? *func_return_value_ptr : NULL); \
-  } else {                                           \
+  if (is_begin) {                                   \
     nr_php_observer_fcall_begin_late(execute_data, txn_start_time);\
   }                                                  \
   if (zcaught) {                                     \
